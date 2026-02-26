@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAREER TIME MACHINE v1.0 - Netscape Enhanced!</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: #008080;
+    background-image: 
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.05) 2px,
+        rgba(0,0,0,0.05) 4px
+      );
+    font-family: 'Times New Roman', serif;
+    min-height: 100vh;
+    cursor: default;
+  }
+
+  /* Scanline overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.03) 3px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* Marquee bar */
+  .marquee-bar {
+    background: #000080;
+    color: #ffff00;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    padding: 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    border-bottom: 3px solid #c0c0c0;
+  }
+
+  .marquee-inner {
+    display: inline-block;
+    animation: marquee 18s linear infinite;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* Main window */
+  .window {
+    max-width: 760px;
+    margin: 16px auto;
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 4px 4px 0 #000000;
+  }
+
+  .window-titlebar {
+    background: linear-gradient(to right, #000080, #1084d0);
+    color: white;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+
+  .titlebar-buttons {
+    display: flex;
+    gap: 2px;
+  }
+
+  .titlebar-btn {
+    width: 18px;
+    height: 16px;
+    background: #c0c0c0;
+    border: 1px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    font-size: 11px;
+    line-height: 14px;
+    text-align: center;
+    color: #000;
+    cursor: pointer;
+    font-family: 'VT323', monospace;
+  }
+
+  .window-content {
+    padding: 12px;
+    background: #c0c0c0;
+  }
+
+  /* Inner content area */
+  .main-panel {
+    background: white;
+    border: 2px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  /* Header graphic area */
+  .site-header {
+    background: #000080;
+    color: #ffff00;
+    text-align: center;
+    padding: 12px;
+    border: 3px ridge #c0c0c0;
+    margin-bottom: 12px;
+  }
+
+  .site-title {
+    font-family: 'VT323', monospace;
+    font-size: 48px;
+    color: #ffff00;
+    text-shadow: 3px 3px #ff0000, 6px 6px #800000;
+    letter-spacing: 2px;
+    animation: colorshift 3s infinite;
+  }
+
+  @keyframes colorshift {
+    0%, 100% { color: #ffff00; text-shadow: 3px 3px #ff0000; }
+    33% { color: #00ffff; text-shadow: 3px 3px #008080; }
+    66% { color: #ff00ff; text-shadow: 3px 3px #800080; }
+  }
+
+  .site-subtitle {
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    color: #00ff00;
+    margin-top: 4px;
+  }
+
+  .best-viewed {
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    color: #c0c0c0;
+    margin-top: 6px;
+  }
+
+  /* Star divider */
+  .star-divider {
+    text-align: center;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    color: #000080;
+    margin: 8px 0;
+    letter-spacing: 4px;
+  }
+
+  /* Input section */
+  .input-section {
+    background: #ffffcc;
+    border: 2px solid #808080;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+
+  .input-label {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: #000080;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .year-input {
+    font-family: 'VT323', monospace;
+    font-size: 24px;
+    width: 120px;
+    padding: 4px 8px;
+    border: 2px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    background: white;
+    color: #000080;
+    text-align: center;
+  }
+
+  .go-button {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    padding: 4px 16px;
+    cursor: pointer;
+    color: #000000;
+    text-shadow: none;
+    transition: none;
+    position: relative;
+    top: 0;
+    left: 0;
+  }
+
+  .go-button:active {
+    border-color: #808080 #ffffff #ffffff #808080;
+    top: 2px;
+    left: 2px;
+  }
+
+  .go-button:hover {
+    background: #d4d0c8;
+  }
+
+  /* Results */
+  .results-box {
+    display: none;
+    background: white;
+    border: 2px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    padding: 14px;
+    margin-top: 12px;
+  }
+
+  .results-box.visible { display: block; }
+
+  .results-title {
+    font-family: 'VT323', monospace;
+    font-size: 26px;
+    color: #000080;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #000080;
+    padding-bottom: 4px;
+  }
+
+  .job-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    padding: 8px;
+    background: #f0f0f0;
+    border: 1px solid #c0c0c0;
+    animation: fadeIn 0.3s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .job-bullet {
+    color: #ff0000;
+    font-size: 20px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    font-family: 'VT323', monospace;
+  }
+
+  .job-content { flex: 1; }
+
+  .job-name {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: #000080;
+  }
+
+  .job-desc {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: #333;
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  .job-iste {
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    color: #008000;
+    margin-top: 2px;
+  }
+
+  /* Loading animation */
+  .loading {
+    display: none;
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: #000080;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .loading.visible { display: block; }
+
+  .loading-dots::after {
+    content: '';
+    animation: dots 1.5s steps(4, end) infinite;
+  }
+
+  @keyframes dots {
+    0%   { content: ''; }
+    25%  { content: '.'; }
+    50%  { content: '..'; }
+    75%  { content: '...'; }
+    100% { content: '....'; }
+  }
+
+  /* Under construction */
+  .under-construction {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px;
+    background: repeating-linear-gradient(
+      -45deg,
+      #ffff00,
+      #ffff00 10px,
+      #000000 10px,
+      #000000 20px
+    );
+    margin: 8px 0;
+  }
+
+  .construction-text {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    background: #000;
+    color: #ffff00;
+    padding: 2px 8px;
+  }
+
+  /* Counter */
+  .visitor-counter {
+    text-align: center;
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    color: #000080;
+    margin-top: 8px;
+  }
+
+  .counter-display {
+    background: #000;
+    color: #00ff00;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 18px;
+    padding: 2px 8px;
+    letter-spacing: 4px;
+    display: inline-block;
+  }
+
+  /* Bottom links bar */
+  .links-bar {
+    background: #000080;
+    padding: 6px;
+    text-align: center;
+  }
+
+  .links-bar a {
+    color: #00ffff;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    text-decoration: underline;
+    margin: 0 8px;
+    cursor: pointer;
+  }
+
+  .links-bar a:hover { color: #ffff00; }
+
+  /* Status bar */
+  .status-bar {
+    background: #c0c0c0;
+    border-top: 2px solid #808080;
+    padding: 3px 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #000;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* Pi symbol trigger */
+  .pi-trigger {
+    position: absolute;
+    bottom: 8px;
+    right: 10px;
+    
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    cursor: pointer;
+    opacity: 0.65; color: #aaddff;
+    transition: opacity 0.2s;
+    user-select: none;
+  }
+  .pi-trigger:hover { opacity: 1; color: #ffff00; }
+
+  /* Hack sequence overlay */
+  .hack-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 2000;
+    background: #000;
+    font-family: 'Share Tech Mono', monospace;
+    overflow: hidden;
+  }
+
+  .hack-overlay.visible { display: block; }
+
+  .hack-screen {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+    padding: 30px 40px;
+    overflow: hidden;
+  }
+
+  .hack-screen.active { display: block; }
+
+  /* Screen 1 - green terminal */
+  .screen-terminal {
+    background: #000;
+    color: #00ff00;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  /* Screen 2 - blue data flood */
+  .screen-data {
+    background: #000020;
+    color: #00aaff;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  /* Screen 3 - red warning */
+  .screen-warning {
+    background: #1a0000;
+    color: #ff3300;
+    font-size: 13px;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Screen 4 - white flash */
+  .screen-flash {
+    background: #ffffff;
+  }
+
+  /* Screen 5 - UNAUTHORIZED ACCESS */
+  .screen-unauthorized {
+    background: #000;
+    color: #ff0000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .unauth-title {
+    font-family: 'VT323', monospace;
+    font-size: 72px;
+    color: #ff0000;
+    text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+    animation: glitch 0.3s infinite;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  @keyframes glitch {
+    0%   { text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000; transform: translate(0,0); }
+    20%  { text-shadow: -3px 0 #00ffff, 3px 0 #ff00ff; transform: translate(-2px, 1px); }
+    40%  { text-shadow: 3px 0 #00ffff, -3px 0 #ff00ff; transform: translate(2px, -1px); }
+    60%  { text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000; transform: translate(0,0); }
+    80%  { text-shadow: -2px 0 #00ffff; transform: translate(1px, 1px); }
+    100% { text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000; transform: translate(0,0); }
+  }
+
+  .unauth-sub {
+    font-family: 'VT323', monospace;
+    font-size: 28px;
+    color: #ff6600;
+    margin-bottom: 30px;
+    text-shadow: 0 0 8px #ff6600;
+  }
+
+  .unauth-divider {
+    color: #ff0000;
+    font-size: 13px;
+    margin: 16px 0;
+    opacity: 0.6;
+    letter-spacing: 2px;
+  }
+
+  .pizza-order {
+    background: #0a0a0a;
+    border: 1px solid #ff0000;
+    padding: 16px 28px;
+    margin: 10px 0;
+    text-align: left;
+    font-size: 13px;
+    color: #ffaa00;
+    box-shadow: 0 0 20px rgba(255,0,0,0.3);
+    max-width: 420px;
+    width: 100%;
+  }
+
+  .pizza-order-title {
+    font-family: 'VT323', monospace;
+    font-size: 24px;
+    color: #00ffff;
+    margin-bottom: 8px;
+    text-align: center;
+    letter-spacing: 3px;
+  }
+
+  .pizza-detail {
+    color: #00ff00;
+    margin: 3px 0;
+    font-size: 12px;
+  }
+
+  .pizza-emoji-big {
+    font-size: 48px;
+    display: block;
+    margin: 8px auto;
+    text-align: center;
+    animation: spin 3s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .unauth-close {
+    margin-top: 24px;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    background: transparent;
+    border: 1px solid #ff0000;
+    color: #ff0000;
+    padding: 6px 24px;
+    cursor: pointer;
+    letter-spacing: 2px;
+  }
+
+  .unauth-close:hover {
+    background: #ff0000;
+    color: #000;
+  }
+
+  .scroll-text {
+    animation: scrollup 12s linear infinite;
+  }
+
+  @keyframes scrollup {
+    from { transform: translateY(0); }
+    to { transform: translateY(-60%); }
+  }
+
+  /* Discussion prompt */
+  .discussion-box {
+    display: none;
+    background: #e8ffe8;
+    border: 2px solid #008000;
+    padding: 12px;
+    margin-top: 12px;
+  }
+
+  .discussion-box.visible { display: block; }
+
+  .discussion-title {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: #000080;
+    margin-bottom: 8px;
+  }
+
+  .discussion-prompt {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  /* Konami hint */
+  .konami-hint {
+    font-family: 'VT323', monospace;
+    font-size: 13px;
+    color: #808080;
+    text-align: center;
+    margin-top: 6px;
+    opacity: 0.6;
+  }
+
+  .gif-placeholder {
+    display: inline-block;
+    font-size: 24px;
+    animation: blink 0.8s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* NEW badge */
+  .new-badge {
+    background: #ff0000;
+    color: #ffff00;
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    padding: 1px 5px;
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- Marquee -->
+<div class="marquee-bar">
+  <span class="marquee-inner">
+    ★ WELCOME TO THE CAREER TIME MACHINE ★ Best viewed in Netscape Navigator 3.0 ★ 800x600 resolution recommended ★ THIS SITE IS FRAMES-FREE ★ Click HERE to sign our guestbook ★ 1,000,000 served! ★ E-Commerce is the FUTURE ★ Information SuperHighway ahead ★ 
+  </span>
+</div>
+
+<!-- Main Window -->
+<div class="window">
+  <div class="window-titlebar">
+    <span>🕐 Career Time Machine v1.0 - [Netscape Navigator]</span>
+    <div class="titlebar-buttons">
+      <div class="titlebar-btn">_</div>
+      <div class="titlebar-btn">□</div>
+      <div class="titlebar-btn">✕</div>
+    </div>
+  </div>
+
+  <div class="window-content">
+    <div class="main-panel">
+
+      <!-- Header -->
+      <div class="site-header">
+        <div class="site-title">⏰ CAREER TIME MACHINE ⏰</div>
+        <div class="site-subtitle">~ Powered by JAVA APPLETS and IMAGINATION ~</div>
+        <div class="best-viewed">★ Best Experienced with Sound ON ★</div>
+      </div>
+
+      <div class="under-construction">
+        <span style="font-size:24px">🚧</span>
+        <span class="construction-text">THIS PAGE IS UNDER CONSTRUCTION</span>
+        <span style="font-size:24px">🚧</span>
+      </div>
+
+      <div class="star-divider">★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
+
+      <!-- Input -->
+      <div class="input-section">
+        <span class="input-label">
+          <span class="gif-placeholder">►</span> 
+          ENTER YOUR HIGH SCHOOL GRADUATION YEAR: <span class="new-badge">NEW!</span>
+        </span>
+        <div class="input-row">
+          <input type="number" class="year-input" id="yearInput" placeholder="e.g. 1998" min="1960" max="2010" />
+          <button class="go-button" onclick="generateCareers()">[ SEARCH! ]</button>
+        </div>
+        <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:#666; margin-top:6px;">
+          ⚠ WARNING: May cause nostalgia. Dial-up users please be patient.
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div class="loading" id="loadingMsg">
+        ⌛ Connecting to the Information SuperHighway<span class="loading-dots"></span><br>
+        <span style="font-size:14px; font-family:'Share Tech Mono',monospace;">Please wait. Do not press BACK or STOP.</span>
+      </div>
+
+      <!-- Results -->
+      <div class="results-box" id="resultsBox">
+        <div class="results-title" id="resultsTitle">JOBS THAT DID NOT EXIST WHEN YOU GRADUATED:</div>
+        <div id="jobsList"></div>
+      </div>
+
+      <!-- Discussion prompt -->
+      <div class="discussion-box" id="discussionBox">
+        <div class="discussion-title">💬 TABLE DISCUSSION:</div>
+        <div class="discussion-prompt" id="discussionPrompt"></div>
+      </div>
+
+      <div class="star-divider" style="margin-top:12px;">· · · · · · · · · ·</div>
+
+      <!-- Visitor counter -->
+      <div class="visitor-counter">
+        You are visitor #<span class="counter-display" id="visitorCount">0004872</span> to this page!<br>
+        <span style="font-size:13px; color:#666;">since June 14, 1997</span>
+      </div>
+
+      <div class="konami-hint">[ Try: pizza pizza pizza ]</div>
+
+    </div>
+
+    <!-- Links bar with Pi symbol -->
+    <div class="links-bar" style="position:relative;">
+      <a>The Net Fan Page</a> |
+      <a>Sign Guestbook</a> |
+      <a>Email Webmaster</a> |
+      <a>Free Backgrounds!</a>
+      <span class="pi-trigger" onclick="startHackSequence()" title="π">π</span>
+    </div>
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span id="statusText">✓ Document: Done</span>
+      <span>🔒 SECURE CONNECTION via SSL</span>
+    </div>
+  </div>
+</div>
+
+<!-- Hack Sequence Overlay -->
+<div class="hack-overlay" id="hackOverlay">
+
+  <!-- Screen 1: Green terminal flood -->
+  <div class="hack-screen screen-terminal" id="hackScreen1">
+    <div class="scroll-text" id="terminalText"></div>
+  </div>
+
+  <!-- Screen 2: Blue data stream -->
+  <div class="hack-screen screen-data" id="hackScreen2">
+    <div id="dataText"></div>
+  </div>
+
+  <!-- Screen 3: Red warning -->
+  <div class="hack-screen screen-warning" id="hackScreen3">
+    <div style="font-family:'VT323',monospace; font-size:52px; color:#ff3300; text-shadow: 0 0 20px #ff3300; animation: glitch 0.4s infinite;">⚠ FIREWALL BREACH DETECTED ⚠</div>
+    <div style="font-size:18px; margin-top:20px; color:#ff6600;">TRACING CONNECTION...</div>
+    <div style="font-size:14px; margin-top:12px; color:#ff3300; letter-spacing:2px;" id="traceText"></div>
+    <div style="font-size:13px; margin-top:20px; color:#ffaa00;">INITIATING COUNTERMEASURES</div>
+  </div>
+
+  <!-- Screen 4: White flash -->
+  <div class="hack-screen screen-flash" id="hackScreen4"></div>
+
+  <!-- Screen 5: UNAUTHORIZED ACCESS + pizza payoff -->
+  <div class="hack-screen screen-unauthorized" id="hackScreen5">
+    <div class="unauth-title">UNAUTHORIZED ACCESS</div>
+    <div class="unauth-sub">CYBERNET SYSTEMS, INC.</div>
+
+    <div class="unauth-divider">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+
+    <div class="pizza-order">
+      <div class="pizza-order-title">🔓 INTERCEPTED ORDER — PIZZA.NET</div>
+      <span class="pizza-emoji-big">🍕</span>
+      <div class="pizza-detail">CUSTOMER : Angela Bennett / user_1472@cybernet.net</div>
+      <div class="pizza-detail">ORDER    : Fiesta Pizza — LARGE</div>
+      <div class="pizza-detail">TOPPINGS : Extra cheese, green peppers, extra mushrooms</div>
+      <div class="pizza-detail">PAYMENT  : Visa ████ ████ ████ 1138</div>
+      <div class="pizza-detail">ADDRESS  : [REDACTED — WITNESS PROTECTION]</div>
+      <div class="pizza-detail" style="margin-top:10px; color:#ff6600;">STATUS   : The Internet remembers everything.</div>
+    </div>
+
+    <div class="unauth-divider" style="margin-top:16px; font-size:11px; color:#555;">
+      — The Net (1995) — The most realistic part was the pizza. —
+    </div>
+
+    <button class="unauth-close" onclick="closeHackSequence()">[ ESC ] DISCONNECT</button>
+  </div>
+
+</div>
+
+<script>
+// Career data by era
+const careerData = {
+  pre1985: [
+    { name: "Social Media Manager", desc: "Manages brand presence across platforms that wouldn't exist for another 20+ years.", iste: "ISTE 1.6 Creative Communicator | 1.7 Global Collaborator" },
+    { name: "Cloud Architect", desc: "Designs systems where data lives in... the sky, basically. On someone else's computer.", iste: "ISTE 1.5 Computational Thinker | 1.4 Innovative Designer" },
+    { name: "App Developer", desc: "Builds software for a device that fits in your pocket and is smarter than a 1985 mainframe.", iste: "ISTE 1.4 Innovative Designer | 1.5 Computational Thinker" },
+    { name: "Data Scientist", desc: "Turns incomprehensible amounts of data into decisions. Requires math and existential tolerance.", iste: "ISTE 1.3 Knowledge Constructor | 1.5 Computational Thinker" },
+    { name: "Cybersecurity Analyst", desc: "Protects digital infrastructure from threats nobody imagined during the Cold War.", iste: "ISTE 1.2 Digital Citizen | 1.5 Computational Thinker" },
+    { name: "UX Designer", desc: "Ensures technology doesn't make people throw their computers out windows.", iste: "ISTE 1.4 Innovative Designer | 1.6 Creative Communicator" },
+    { name: "AI Prompt Engineer", desc: "Professionally talks to computers in a way they actually understand. Pays well.", iste: "ISTE 1.5 Computational Thinker | 1.3 Knowledge Constructor" },
+  ],
+  mid80s90s: [
+    { name: "Social Media Manager", desc: "AOL Instant Messenger was your whole social network. Now it's a career for entire departments.", iste: "ISTE 1.6 Creative Communicator | 1.7 Global Collaborator" },
+    { name: "App Developer", desc: "You had Oregon Trail on a floppy. Now apps are built by individuals in rural Oklahoma.", iste: "ISTE 1.4 Innovative Designer | 1.5 Computational Thinker" },
+    { name: "Podcast Producer", desc: "Radio, but you upload it yourself and there are 4 million of them.", iste: "ISTE 1.6 Creative Communicator | 1.1 Empowered Learner" },
+    { name: "Data Scientist", desc: "You learned to make graphs in Logo. Data Scientists do that — but for billion-row datasets.", iste: "ISTE 1.3 Knowledge Constructor | 1.5 Computational Thinker" },
+    { name: "Cybersecurity Analyst", desc: "The movie 'Hackers' made this look cooler than it is. The pay, however, is real.", iste: "ISTE 1.2 Digital Citizen | 1.5 Computational Thinker" },
+    { name: "AI Ethics Researcher", desc: "Someone has to ask if we should before we ask if we can. That's a job now.", iste: "ISTE 1.2 Digital Citizen | 1.3 Knowledge Constructor" },
+    { name: "Growth Hacker", desc: "Not actual hacking. Marketing, but data-driven and with a more exciting job title.", iste: "ISTE 1.5 Computational Thinker | 1.6 Creative Communicator" },
+  ],
+  late90s2000s: [
+    { name: "TikTok Content Creator", desc: "You had MySpace. This is similar except the videos are shorter and the ad revenue is real.", iste: "ISTE 1.6 Creative Communicator | 1.1 Empowered Learner" },
+    { name: "Machine Learning Engineer", desc: "Teaches computers to recognize your face, predict your purchases, and occasionally embarrass you.", iste: "ISTE 1.5 Computational Thinker | 1.4 Innovative Designer" },
+    { name: "Blockchain Developer", desc: "Creates distributed ledger systems. Still can't fully explain it at Thanksgiving dinner.", iste: "ISTE 1.4 Innovative Designer | 1.5 Computational Thinker" },
+    { name: "Cloud Architect", desc: "Your Napster downloads lived locally. Now everything is someone else's server farm in Virginia.", iste: "ISTE 1.5 Computational Thinker | 1.4 Innovative Designer" },
+    { name: "AI Prompt Engineer", desc: "ChatGPT launched when these folks were still in high school. Now they're writing job descriptions.", iste: "ISTE 1.5 Computational Thinker | 1.3 Knowledge Constructor" },
+    { name: "Influencer Marketing Coordinator", desc: "Someone manages the people who manage their audiences. It's turtles all the way down.", iste: "ISTE 1.6 Creative Communicator | 1.7 Global Collaborator" },
+    { name: "Drone Operator / UAV Technician", desc: "Pilot school, but you never leave the ground and the FAA still has opinions about everything.", iste: "ISTE 1.4 Innovative Designer | 1.5 Computational Thinker" },
+  ]
+};
+
+function getCareers(year) {
+  if (year < 1985) return careerData.pre1985;
+  if (year <= 2000) return careerData.mid80s90s;
+  return careerData.late90s2000s;
+}
+
+function getDiscussionPrompt(year) {
+  return `Think about a student graduating high school THIS year.\n\nBy the time they're 10 years into their career, what jobs might exist that don't exist today?\n\nMore importantly: which ISTE standards would those jobs require — and are we building those skills NOW?`;
+}
+
+function generateCareers() {
+  const yearInput = document.getElementById('yearInput');
+  const year = parseInt(yearInput.value);
+
+  if (!year || year < 1950 || year > 2010) {
+    document.getElementById('statusText').textContent = '⚠ ERROR: Please enter a valid year between 1950 and 2010';
+    return;
+  }
+
+  const loading = document.getElementById('loadingMsg');
+  const resultsBox = document.getElementById('resultsBox');
+  const discussionBox = document.getElementById('discussionBox');
+
+  resultsBox.classList.remove('visible');
+  discussionBox.classList.remove('visible');
+  loading.classList.add('visible');
+  document.getElementById('statusText').textContent = '⌛ Connecting to Career Database Server...';
+
+  setTimeout(() => {
+    loading.classList.remove('visible');
+
+    const careers = getCareers(year);
+    const jobsList = document.getElementById('jobsList');
+    jobsList.innerHTML = '';
+
+    document.getElementById('resultsTitle').textContent =
+      `JOBS THAT DID NOT EXIST IN ${year}:`;
+
+    careers.forEach((job, index) => {
+      const item = document.createElement('div');
+      item.className = 'job-item';
+      item.style.animationDelay = `${index * 0.1}s`;
+      item.innerHTML = `
+        <span class="job-bullet">►</span>
+        <div class="job-content">
+          <div class="job-name">${job.name}</div>
+          <div class="job-desc">${job.desc}</div>
+          <div class="job-iste">📋 ${job.iste}</div>
+        </div>
+      `;
+      jobsList.appendChild(item);
+    });
+
+    resultsBox.classList.add('visible');
+
+    document.getElementById('discussionPrompt').textContent = getDiscussionPrompt(year);
+    discussionBox.classList.add('visible');
+
+    document.getElementById('statusText').textContent = '✓ Document: Done | ' + careers.length + ' careers loaded';
+  }, 2200);
+}
+
+// Allow Enter key
+document.getElementById('yearInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') generateCareers();
+});
+
+// ── HACK SEQUENCE ──────────────────────────────────────────────
+const terminalLines = [
+  "$ ssh root@cybernet.net -p 22",
+  "Password: **************",
+  "Access granted. Welcome, Administrator.",
+  "$ ls -la /usr/local/bin/",
+  "drwxr-xr-x  2 root root  4096 Jun 14 1995 .",
+  "-rwxr-xr-x  1 root root 12842 Jun 14 1995 gateway",
+  "-rwxr-xr-x  1 root root  9021 Jun 14 1995 pi_interface",
+  "$ ./pi_interface --query user_records",
+  "Querying Praetorian database...",
+  "Decrypting RSA-512 layer 1...",
+  "Decrypting RSA-512 layer 2...",
+  "Decrypting RSA-512 layer 3...",
+  "WARNING: Intrusion detection active",
+  "Bypassing firewall node 192.168.0.1...",
+  "Bypassing firewall node 192.168.0.44...",
+  "Bypassing firewall node 10.0.0.255...",
+  "SUCCESS — firewall neutralized",
+  "$ grep -r 'bennett' /var/db/users/",
+  "Found: bennett_angela | user_1472 | clearance: STANDARD",
+  "Pulling order history from PIZZA.NET...",
+  "Mounting remote volume...",
+  "Volume mounted at /mnt/remote/pizza_net/",
+  "$ cat /mnt/remote/pizza_net/orders/user_1472.log",
+];
+
+const dataLines = [
+  "0x4F72 0x6465 0x7220 0x4C6F 0x6720 0x5632 0x2E30",
+  "PACKET 001 ▓▓▓▓▓▓▓▓░░░░░░░░ 52% [USER_ID: 1472]",
+  "PACKET 002 ▓▓▓▓▓▓▓▓▓▓░░░░░░ 64% [ORDER_DB]",
+  "PACKET 003 ▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 78% [PIZZA.NET]",
+  "RECV: GET /orders/user_1472 HTTP/1.0",
+  "RECV: Host: pizza.net",
+  "RECV: Authorization: Bearer [REDACTED]",
+  "200 OK — Content-Type: application/x-pizza",
+  "PACKET 004 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 89% [DECRYPTING]",
+  "PACKET 005 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100% [COMPLETE]",
+  "TRANSFER COMPLETE — 4,096 bytes received",
+  "Parsing order record...",
+  "ORDER VERIFIED — rendering output...",
+];
+
+let hackTimers = [];
+
+function clearHackTimers() {
+  hackTimers.forEach(t => clearTimeout(t));
+  hackTimers = [];
+}
+
+function showScreen(n) {
+  document.querySelectorAll('.hack-screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('hackScreen' + n);
+  if (el) el.classList.add('active');
+}
+
+function startHackSequence() {
+  clearHackTimers();
+  document.getElementById('hackOverlay').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+
+  // All timing is ABSOLUTE from sequence start (t=0)
+  // Screen 1: 0ms — green terminal, lines every 80ms
+  // 23 lines * 80ms = 1840ms total for screen 1
+  const S1_DURATION = terminalLines.length * 80; // ~1840ms
+
+  showScreen(1);
+  const termEl = document.getElementById('terminalText');
+  termEl.innerHTML = '';
+  terminalLines.forEach((line, i) => {
+    hackTimers.push(setTimeout(() => {
+      termEl.innerHTML += line + '\n';
+    }, i * 80));
+  });
+
+  // Screen 2: starts after screen 1 + 200ms pause
+  // 13 lines * 90ms = 1170ms total for screen 2
+  const S2_START = S1_DURATION + 200;
+  const S2_DURATION = dataLines.length * 90; // ~1170ms
+
+  hackTimers.push(setTimeout(() => {
+    showScreen(2);
+    const dataEl = document.getElementById('dataText');
+    dataEl.innerHTML = '';
+    dataLines.forEach((line, i) => {
+      hackTimers.push(setTimeout(() => {
+        dataEl.innerHTML += line + '<br>';
+      }, i * 90));
+    });
+  }, S2_START));
+
+  // Screen 3: starts after screen 2 finishes + 300ms pause
+  // Runs for ~2000ms (4 nodes * 400ms + buffer)
+  const S3_START = S2_START + S2_DURATION + 300;
+  const S3_DURATION = 4 * 400 + 600; // ~2200ms
+
+  hackTimers.push(setTimeout(() => {
+    showScreen(3);
+    const traceEl = document.getElementById('traceText');
+    traceEl.innerHTML = '';
+    const nodes = [
+      'NODE: 192.168.4.22 ... TRACED',
+      'NODE: 10.44.0.117  ... TRACED',
+      'NODE: 172.16.8.9   ... TRACED',
+      'ORIGIN: UNKNOWN — SIGNAL LOST',
+    ];
+    nodes.forEach((node, i) => {
+      hackTimers.push(setTimeout(() => {
+        traceEl.innerHTML += node + '<br>';
+      }, i * 400));
+    });
+  }, S3_START));
+
+  // Screen 4: white flash — brief, just a beat
+  const S4_START = S3_START + S3_DURATION;
+  hackTimers.push(setTimeout(() => {
+    showScreen(4);
+  }, S4_START));
+
+  // Screen 5: UNAUTHORIZED ACCESS — 300ms after flash
+  const S5_START = S4_START + 300;
+  hackTimers.push(setTimeout(() => {
+    showScreen(5);
+  }, S5_START));
+}
+
+function closeHackSequence() {
+  clearHackTimers();
+  document.getElementById('hackOverlay').classList.remove('visible');
+  document.querySelectorAll('.hack-screen').forEach(s => s.classList.remove('active'));
+  document.body.style.overflow = '';
+}
+
+// ESC key also closes
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeHackSequence();
+});
+
+// Secret keyboard trigger: type "pizza" three times
+let pizzaBuffer = '';
+document.addEventListener('keypress', function(e) {
+  pizzaBuffer += e.key.toLowerCase();
+  if (pizzaBuffer.includes('pizzapizzapizza')) {
+    pizzaBuffer = '';
+    startHackSequence();
+  }
+  if (pizzaBuffer.length > 30) pizzaBuffer = pizzaBuffer.slice(-30);
+});
+
+// Animated visitor counter
+let count = 4872;
+setInterval(() => {
+  count += Math.floor(Math.random() * 3);
+  document.getElementById('visitorCount').textContent = String(count).padStart(7, '0');
+}, 4000);
+</script>
+</body>
+</html>
