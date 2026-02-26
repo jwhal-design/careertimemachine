@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CAREER TIME MACHINE v1.0 - Netscape Enhanced!</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background-color: #008080;
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.05) 2px, rgba(0,0,0,.05) 4px);
+  font-family: 'Times New Roman', serif;
+  min-height: 100vh;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.03) 3px, rgba(0,0,0,.03) 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* MARQUEE */
+.marquee-bar {
+  background: #000080;
+  color: #ffff00;
+  font-family: 'VT323', monospace;
+  font-size: clamp(13px, 3vw, 18px);
+  padding: 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  border-bottom: 3px solid #c0c0c0;
+}
+.marquee-inner { display: inline-block; animation: marquee 22s linear infinite; }
+@keyframes marquee { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
+
+/* WINDOW CHROME */
+.window {
+  max-width: 760px;
+  margin: 12px auto;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #808080 #808080 #fff;
+  box-shadow: 4px 4px 0 #000;
+}
+.titlebar {
+  background: linear-gradient(to right, #000080, #1084d0);
+  color: #fff;
+  font-family: 'VT323', monospace;
+  font-size: clamp(13px, 3.5vw, 19px);
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  user-select: none;
+}
+.titlebar-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.titlebar-btns { display: flex; gap: 2px; flex-shrink: 0; }
+.titlebar-btn {
+  width: 18px; height: 16px;
+  background: #c0c0c0;
+  border: 1px solid; border-color: #fff #808080 #808080 #fff;
+  font-size: 11px; line-height: 14px; text-align: center;
+  color: #000; cursor: pointer; font-family: 'VT323', monospace; flex-shrink: 0;
+}
+.win-body { padding: 10px; }
+
+/* MAIN PANEL */
+.panel {
+  background: #fff;
+  border: 2px solid; border-color: #808080 #fff #fff #808080;
+  padding: clamp(10px, 3vw, 16px);
+  margin-bottom: 10px;
+}
+
+/* SITE HEADER */
+.site-header {
+  background: #000080;
+  text-align: center;
+  padding: clamp(8px, 2vw, 12px);
+  border: 3px ridge #c0c0c0;
+  margin-bottom: 12px;
+}
+.site-title {
+  font-family: 'VT323', monospace;
+  font-size: clamp(28px, 8vw, 52px);
+  color: #ffff00;
+  text-shadow: 3px 3px #f00, 6px 6px #800000;
+  letter-spacing: 2px;
+  line-height: 1.1;
+  animation: colorshift 3s infinite;
+}
+@keyframes colorshift {
+  0%,100% { color: #ffff00; text-shadow: 3px 3px #f00; }
+  33%      { color: #0ff;    text-shadow: 3px 3px #008080; }
+  66%      { color: #f0f;    text-shadow: 3px 3px #800080; }
+}
+.site-sub  { font-family: 'VT323', monospace; font-size: clamp(12px, 3vw, 19px); color: #0f0; margin-top: 4px; }
+.site-note { font-family: 'VT323', monospace; font-size: clamp(11px, 2vw, 13px); color: #c0c0c0; margin-top: 6px; }
+
+/* CONSTRUCTION BANNER */
+.construction {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 5px; margin: 8px 0;
+  background: repeating-linear-gradient(-45deg, #ffff00, #ffff00 10px, #000 10px, #000 20px);
+}
+.construction-text {
+  font-family: 'VT323', monospace; font-size: clamp(12px, 3vw, 17px);
+  background: #000; color: #ffff00; padding: 2px 8px; white-space: nowrap;
+}
+
+/* DIVIDER */
+.divider { text-align: center; font-family: 'VT323', monospace; font-size: 18px; color: #000080; margin: 8px 0; letter-spacing: 4px; }
+
+/* SOUND BUTTON */
+.sound-wrap { text-align: center; margin: 8px 0 4px; }
+.sound-btn {
+  font-family: 'VT323', monospace; font-size: clamp(13px, 2.8vw, 16px);
+  background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+  padding: 4px 14px; cursor: pointer; color: #000080;
+  touch-action: manipulation; min-height: 36px;
+}
+.sound-btn:active { border-color: #808080 #fff #fff #808080; }
+.sound-btn.on { color: #006600; }
+
+/* INPUT SECTION */
+.input-box {
+  background: #ffffcc; border: 2px solid #808080;
+  padding: clamp(10px, 3vw, 14px); margin-bottom: 12px;
+}
+.input-label {
+  font-family: 'VT323', monospace; font-size: clamp(14px, 4vw, 21px);
+  color: #000080; margin-bottom: 8px; display: block; line-height: 1.3;
+}
+.input-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.year-input {
+  font-family: 'VT323', monospace; font-size: clamp(20px, 5vw, 24px);
+  width: clamp(90px, 25vw, 120px); padding: 6px 8px;
+  border: 2px solid; border-color: #808080 #fff #fff #808080;
+  background: #fff; color: #000080; text-align: center;
+  -webkit-appearance: none; min-height: 44px;
+}
+.year-input::-webkit-inner-spin-button,
+.year-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.year-input[type=number] { -moz-appearance: textfield; }
+.search-btn {
+  font-family: 'VT323', monospace; font-size: clamp(17px, 4vw, 22px);
+  background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+  padding: 6px 16px; cursor: pointer; color: #000;
+  touch-action: manipulation; min-height: 44px;
+}
+.search-btn:active { border-color: #808080 #fff #fff #808080; top: 2px; left: 2px; }
+.input-hint { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: #666; margin-top: 6px; }
+
+/* BLINK */
+.blink { display: inline-block; animation: blink .8s step-end infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.new-badge {
+  background: #f00; color: #ffff00; font-family: 'VT323', monospace;
+  font-size: 13px; padding: 1px 4px; animation: blink 1s step-end infinite;
+  vertical-align: middle; margin-left: 4px;
+}
+
+/* LOADING */
+.loading { display: none; font-family: 'VT323', monospace; font-size: clamp(16px,4vw,22px); color: #000080; text-align: center; padding: 20px; line-height: 1.6; }
+.loading.on { display: block; }
+.dots::after { content: ''; animation: dots 1.5s steps(4,end) infinite; }
+@keyframes dots { 0%{content:''} 25%{content:'.'} 50%{content:'..'} 75%{content:'...'} }
+
+/* RESULTS */
+.results { display: none; background: #fff; border: 2px solid; border-color: #808080 #fff #fff #808080; padding: clamp(10px,3vw,14px); margin-top: 12px; }
+.results.on { display: block; }
+.results-title { font-family: 'VT323', monospace; font-size: clamp(16px,4vw,24px); color: #000080; margin-bottom: 10px; border-bottom: 2px solid #000080; padding-bottom: 4px; }
+
+.job {
+  display: flex; align-items: flex-start; margin-bottom: 10px; padding: 8px;
+  background: #f0f0f0; border: 1px solid #c0c0c0;
+  animation: fadein .3s ease forwards; opacity: 0;
+}
+@keyframes fadein { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
+.job-arrow { color: #f00; font-size: 18px; margin-right: 8px; flex-shrink: 0; font-family: 'VT323', monospace; margin-top: 2px; }
+.job-body { flex: 1; min-width: 0; }
+.job-name { font-family: 'VT323', monospace; font-size: clamp(16px,4vw,22px); color: #000080; }
+.job-desc { font-family: 'Share Tech Mono', monospace; font-size: clamp(10px,2.2vw,12px); color: #333; margin-top: 2px; line-height: 1.4; }
+.job-iste { font-family: 'VT323', monospace; font-size: clamp(11px,2.5vw,14px); color: #008000; margin-top: 2px; }
+
+/* DISCUSSION */
+.discussion { display: none; background: #e8ffe8; border: 2px solid #008000; padding: clamp(10px,3vw,12px); margin-top: 12px; }
+.discussion.on { display: block; }
+.discussion-title { font-family: 'VT323', monospace; font-size: clamp(16px,4vw,21px); color: #000080; margin-bottom: 6px; }
+.discussion-body { font-family: 'Share Tech Mono', monospace; font-size: clamp(10px,2.2vw,13px); color: #333; line-height: 1.6; white-space: pre-line; }
+
+/* COUNTER */
+.counter { text-align: center; font-family: 'VT323', monospace; font-size: clamp(13px,3vw,16px); color: #000080; margin-top: 10px; }
+.counter-num { background: #000; color: #0f0; font-family: 'Share Tech Mono', monospace; font-size: clamp(14px,3.5vw,18px); padding: 2px 8px; letter-spacing: 4px; display: inline-block; }
+
+/* LINKS BAR */
+.links-bar {
+  background: #000080; padding: 6px 40px 6px 8px;
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+  gap: 2px; min-height: 36px; position: relative;
+}
+.links-bar a { color: #0ff; font-family: 'VT323', monospace; font-size: clamp(13px,3vw,17px); text-decoration: underline; margin: 0 4px; cursor: pointer; white-space: nowrap; }
+.links-bar a:hover { color: #ffff00; }
+.sep { color: #4466aa; font-family: 'VT323', monospace; font-size: 16px; }
+.pi {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  color: #aaddff; font-family: 'VT323', monospace; font-size: 20px;
+  cursor: pointer; opacity: .65; user-select: none;
+  padding: 6px 8px; touch-action: manipulation; line-height: 1;
+  transition: opacity .2s, color .2s;
+}
+.pi:hover, .pi:active { opacity: 1; color: #ffff00; }
+
+/* STATUS BAR */
+.status-bar {
+  background: #c0c0c0; border-top: 2px solid #808080; padding: 3px 8px;
+  font-family: 'Share Tech Mono', monospace; font-size: clamp(9px,1.8vw,11px);
+  color: #000; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px;
+}
+
+/* UNAUTHORIZED OVERLAY */
+.unauth {
+  display: none; position: fixed; inset: 0; z-index: 2000;
+  background: #000; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: clamp(16px,4vw,40px);
+  align-items: center; justify-content: center;
+}
+.unauth.on { display: flex; }
+.unauth-inner {
+  max-width: 480px; width: 100%;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  font-family: 'Share Tech Mono', monospace; color: #f00; margin: auto;
+}
+.unauth-title {
+  font-family: 'VT323', monospace; font-size: clamp(36px,10vw,72px);
+  color: #f00; text-shadow: 0 0 20px #f00, 0 0 40px #f00;
+  animation: glitch .3s infinite; line-height: 1; margin-bottom: 6px;
+}
+@keyframes glitch {
+  0%   { text-shadow: 0 0 20px #f00, 0 0 40px #f00; transform: translate(0,0); }
+  20%  { text-shadow: -3px 0 #0ff, 3px 0 #f0f;      transform: translate(-2px,1px); }
+  40%  { text-shadow: 3px 0 #0ff, -3px 0 #f0f;       transform: translate(2px,-1px); }
+  60%  { text-shadow: 0 0 20px #f00;                  transform: translate(0,0); }
+  80%  { text-shadow: -2px 0 #0ff;                    transform: translate(1px,1px); }
+  100% { text-shadow: 0 0 20px #f00, 0 0 40px #f00; transform: translate(0,0); }
+}
+.unauth-sub { font-family: 'VT323', monospace; font-size: clamp(17px,5vw,28px); color: #f60; margin-bottom: 20px; text-shadow: 0 0 8px #f60; }
+.unauth-rule { color: #f00; opacity: .4; margin: 10px 0; width: 100%; font-size: 12px; }
+.pizza-box {
+  background: #0a0a0a; border: 1px solid #f00;
+  padding: clamp(12px,3vw,16px) clamp(12px,4vw,24px);
+  text-align: left; color: #fa0; box-shadow: 0 0 20px rgba(255,0,0,.3); width: 100%;
+}
+.pizza-title { font-family: 'VT323', monospace; font-size: clamp(16px,5vw,24px); color: #0ff; margin-bottom: 8px; text-align: center; letter-spacing: 2px; }
+.pizza-spin { font-size: clamp(32px,8vw,48px); display: block; margin: 8px auto; text-align: center; animation: spin 3s linear infinite; }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+.pizza-line { color: #0f0; margin: 3px 0; font-size: clamp(9px,2vw,12px); word-break: break-word; }
+.pizza-status { margin-top: 10px; color: #f60; font-size: clamp(9px,2vw,12px); }
+.unauth-note { margin-top: 14px; font-size: clamp(9px,1.8vw,11px); color: #444; letter-spacing: 1px; }
+.unauth-close {
+  margin-top: 20px; font-family: 'VT323', monospace; font-size: clamp(16px,4vw,20px);
+  background: transparent; border: 1px solid #f00; color: #f00;
+  padding: 10px 28px; cursor: pointer; letter-spacing: 2px;
+  touch-action: manipulation; min-height: 48px; min-width: 160px;
+}
+.unauth-close:hover, .unauth-close:active { background: #f00; color: #000; }
+
+@media (max-width: 480px) { .window { margin: 6px; } .panel { padding: 10px; } }
+</style>
+</head>
+<body>
+
+<div class="marquee-bar">
+  <span class="marquee-inner">&#9733; WELCOME TO THE CAREER TIME MACHINE &#9733; Best viewed in Netscape Navigator 3.0 &#9733; 800x600 resolution recommended &#9733; THIS SITE IS FRAMES-FREE &#9733; Click HERE to sign our guestbook &#9733; 1,000,000 served! &#9733; E-Commerce is the FUTURE &#9733; Information SuperHighway ahead &#9733;</span>
+</div>
+
+<div class="window">
+  <div class="titlebar">
+    <span class="titlebar-title">&#128336; Career Time Machine v1.0 &#8212; [Netscape Navigator]</span>
+    <div class="titlebar-btns">
+      <div class="titlebar-btn">_</div>
+      <div class="titlebar-btn">&#9633;</div>
+      <div class="titlebar-btn">&#10005;</div>
+    </div>
+  </div>
+
+  <div class="win-body">
+    <div class="panel">
+
+      <div class="site-header">
+        <div class="site-title">&#9200; CAREER TIME MACHINE &#9200;</div>
+        <div class="site-sub">~ Powered by JAVA APPLETS and IMAGINATION ~</div>
+        <div class="site-note">&#9733; Best Experienced with Sound ON &#9733;</div>
+      </div>
+
+      <div class="construction">
+        <span>&#128679;</span>
+        <span class="construction-text">THIS PAGE IS UNDER CONSTRUCTION</span>
+        <span>&#128679;</span>
+      </div>
+
+      <div class="sound-wrap">
+        <button class="sound-btn" id="sndBtn">&#128251; Enable Sound</button>
+      </div>
+
+      <div class="divider">&#9733; &#9733; &#9733; &#9733; &#9733; &#9733; &#9733; &#9733; &#9733; &#9733;</div>
+
+      <div class="input-box">
+        <span class="input-label">
+          <span class="blink">&#9658;</span>
+          ENTER YOUR HIGH SCHOOL GRADUATION YEAR: <span class="new-badge">NEW!</span>
+        </span>
+        <div class="input-row">
+          <input class="year-input" id="yearIn" type="number" inputmode="numeric" pattern="[0-9]*" min="1950" max="2020" placeholder="e.g. 1995">
+          <button class="search-btn" id="searchBtn">[ SEARCH! ]</button>
+        </div>
+        <div class="input-hint">&#9888; WARNING: May cause nostalgia. Dial-up users please be patient.</div>
+      </div>
+
+      <div class="loading" id="loadDiv">
+        &#8987; Connecting to the Information SuperHighway<span class="dots"></span><br>
+        <span style="font-size:13px;font-family:'Share Tech Mono',monospace;">Please wait. Do not press BACK or STOP.</span>
+      </div>
+
+      <div class="results" id="resultsDiv">
+        <div class="results-title" id="resultsTitle">JOBS THAT DID NOT EXIST WHEN YOU GRADUATED:</div>
+        <div id="jobList"></div>
+      </div>
+
+      <div class="discussion" id="discussDiv">
+        <div class="discussion-title">&#128172; TABLE DISCUSSION:</div>
+        <div class="discussion-body">Think about a student graduating high school THIS year.
+
+By the time they are 10 years into their career, what jobs might exist that don't exist today?
+
+More importantly: which ISTE standards would those jobs require -- and are we building those skills NOW?</div>
+      </div>
+
+      <div class="divider" style="margin-top:12px;">&#183; &#183; &#183; &#183; &#183; &#183; &#183; &#183; &#183; &#183;</div>
+
+      <div class="counter">
+        You are visitor #<span class="counter-num" id="ctrNum">0004872</span> to this page!<br>
+        <span style="font-size:12px;color:#666;">since June 14, 1997</span>
+      </div>
+
+    </div><!-- /panel -->
+
+    <div class="links-bar">
+      <a>The Net Fan Page</a>
+      <span class="sep">|</span>
+      <a>Sign Guestbook</a>
+      <span class="sep">|</span>
+      <a>Free Backgrounds!</a>
+      <span class="pi" id="piBtn">&#960;</span>
+    </div>
+
+    <div class="status-bar">
+      <span id="statusTxt">&#10003; Document: Done</span>
+      <span>&#128274; SECURE CONNECTION via SSL</span>
+    </div>
+  </div><!-- /win-body -->
+</div><!-- /window -->
+
+<!-- UNAUTHORIZED ACCESS -->
+<div class="unauth" id="unauthDiv">
+  <div class="unauth-inner">
+    <div class="unauth-title">UNAUTHORIZED ACCESS</div>
+    <div class="unauth-sub">CYBERNET SYSTEMS, INC.</div>
+    <div class="unauth-rule">&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;</div>
+    <div class="pizza-box">
+      <div class="pizza-title">&#128275; INTERCEPTED ORDER &#8212; PIZZA.NET</div>
+      <span class="pizza-spin">&#127829;</span>
+      <div class="pizza-line">CUSTOMER : Angela Bennett / user_1472@cybernet.net</div>
+      <div class="pizza-line">ORDER &nbsp;&nbsp;&nbsp;: Fiesta Pizza &#8212; LARGE</div>
+      <div class="pizza-line">TOPPINGS : Extra cheese, green peppers, extra mushrooms</div>
+      <div class="pizza-line">PAYMENT &nbsp;: Visa &#9608;&#9608;&#9608;&#9608; &#9608;&#9608;&#9608;&#9608; &#9608;&#9608;&#9608;&#9608; 1138</div>
+      <div class="pizza-line">ADDRESS &nbsp;: [REDACTED &#8212; WITNESS PROTECTION]</div>
+      <div class="pizza-status">STATUS &nbsp;&nbsp;: The Internet remembers everything.</div>
+    </div>
+    <div class="unauth-note">&#8212; The Net (1995) &#8212; The most realistic part was the pizza. &#8212;</div>
+    <button class="unauth-close" id="closeBtn">[ ESC ] DISCONNECT</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── ELEMENTS ──────────────────────────────────────────────────
+  var sndBtn     = document.getElementById('sndBtn');
+  var searchBtn  = document.getElementById('searchBtn');
+  var yearIn     = document.getElementById('yearIn');
+  var loadDiv    = document.getElementById('loadDiv');
+  var resultsDiv = document.getElementById('resultsDiv');
+  var resultsTitle = document.getElementById('resultsTitle');
+  var jobList    = document.getElementById('jobList');
+  var discussDiv = document.getElementById('discussDiv');
+  var statusTxt  = document.getElementById('statusTxt');
+  var ctrNum     = document.getElementById('ctrNum');
+  var piBtn      = document.getElementById('piBtn');
+  var unauthDiv  = document.getElementById('unauthDiv');
+  var closeBtn   = document.getElementById('closeBtn');
+
+  // ── SOUND ─────────────────────────────────────────────────────
+  var soundOn = false;
+  var actx = null;
+
+  function getCtx() {
+    if (!actx) { actx = new (window.AudioContext || window.webkitAudioContext)(); }
+    if (actx.state === 'suspended') { actx.resume(); }
+    return actx;
+  }
+
+  function tone(freq, startSec, durSec, vol, shape) {
+    var ctx  = getCtx();
+    var now  = ctx.currentTime;
+    var osc  = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = shape || 'sawtooth';
+    osc.frequency.setValueAtTime(freq, now + startSec);
+    gain.gain.setValueAtTime(vol || 0.2, now + startSec);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + startSec + durSec);
+    osc.start(now + startSec);
+    osc.stop(now + startSec + durSec + 0.02);
+  }
+
+  sndBtn.addEventListener('click', function () {
+    soundOn = !soundOn;
+    if (soundOn) {
+      sndBtn.textContent = '\uD83D\uDCFB Sound: ON \u2713';
+      sndBtn.classList.add('on');
+      tone(880,  0.00, 0.10, 0.18, 'sine');
+      tone(1320, 0.13, 0.10, 0.18, 'sine');
+    } else {
+      sndBtn.textContent = '\uD83D\uDCFB Enable Sound';
+      sndBtn.classList.remove('on');
+    }
+  });
+
+  function playDialup() {
+    if (!soundOn) { return; }
+    var tones = [
+      [2100, 0.00, 0.40, 0.26],
+      [1300, 0.45, 0.30, 0.26],
+      [2100, 0.80, 0.20, 0.22],
+      [1300, 1.05, 0.20, 0.22],
+      [2400, 1.30, 0.15, 0.18],
+      [1200, 1.50, 0.15, 0.18]
+    ];
+    for (var i = 0; i < 22; i++) {
+      tones.push([400 + Math.random() * 2800, 1.72 + i * 0.065, 0.055, 0.09]);
+    }
+    tones.forEach(function (t) { tone(t[0], t[1], t[2], t[3]); });
+  }
+
+  // ── CAREER DATA ───────────────────────────────────────────────
+  var pools = {
+    pre1985: [
+      { n:'Social Media Manager',    d:"Manages brand presence across platforms that wouldn't exist for another 20+ years.",          s:'ISTE 1.6 Creative Communicator | 1.7 Global Collaborator' },
+      { n:'Cloud Architect',         d:'Designs systems where data lives in the sky. Basically on someone else\'s computer.',          s:'ISTE 1.5 Computational Thinker | 1.4 Innovative Designer' },
+      { n:'App Developer',           d:'Builds software for a device that fits in your pocket and outpaces a 1985 mainframe.',        s:'ISTE 1.4 Innovative Designer | 1.5 Computational Thinker' },
+      { n:'Data Scientist',          d:'Turns incomprehensible amounts of data into decisions. Requires math and existential tolerance.',s:'ISTE 1.3 Knowledge Constructor | 1.5 Computational Thinker' },
+      { n:'Cybersecurity Analyst',   d:'Protects digital infrastructure from threats nobody imagined during the Cold War.',            s:'ISTE 1.2 Digital Citizen | 1.5 Computational Thinker' },
+      { n:'UX Designer',             d:'Ensures technology does not make people throw their computers out windows.',                   s:'ISTE 1.4 Innovative Designer | 1.6 Creative Communicator' },
+      { n:'AI Prompt Engineer',      d:'Professionally talks to computers in a way they actually understand. Pays well.',             s:'ISTE 1.5 Computational Thinker | 1.3 Knowledge Constructor' },
+      { n:'Podcast Producer',        d:'Radio, but you upload it yourself, keep all the ad money, and nobody tells you to be quiet.', s:'ISTE 1.6 Creative Communicator | 1.1 Empowered Learner' },
+      { n:'SEO Specialist',          d:'Convinces Google your webpage deserves to exist. Somehow a real profession.',                 s:'ISTE 1.3 Knowledge Constructor | 1.6 Creative Communicator' },
+      { n:'DevOps Engineer',         d:'Bridges the gap between writing code and making sure it does not explode in production.',     s:'ISTE 1.5 Computational Thinker | 1.4 Innovative Designer' },
+      { n:'Content Strategist',      d:'Decides what the internet should say about your company. Then makes sure it says it.',        s:'ISTE 1.6 Creative Communicator | 1.3 Knowledge Constructor' },
+      { n:'E-Learning Designer',     d:'Builds online courses. Ironically, there were no online courses to teach them how.',         s:'ISTE 1.4 Innovative Designer | 1.6 Creative Communicator' }
+    ],
+    mid8090s: [
+      { n:'Social Media Manager',    d:'AOL Instant Messenger was your whole social network. Now it\'s a career for entire departments.', s:'ISTE 1.6 Creative Communicator | 1.7 Global Collaborator' },
+      { n:'App Developer',           d:'You had Oregon Trail on a floppy. Now apps are built by individuals in rural Oklahoma.',           s:'ISTE 1.4 Innovative Designer | 1.5 Computational Thinker' },
+      { n:'Podcast Producer',        d:'Radio, but you upload it yourself and there are 4 million of them.',                              s:'ISTE 1.6 Creative Communicator | 1.1 Empowered Learner' },
+      { n:'Data Scientist',          d:'You learned to make graphs in Logo. Data Scientists do that -- but for billion-row datasets.',    s:'ISTE 1.3 Knowledge Constructor | 1.5 Computational Thinker' },
+      { n:'Cybersecurity Analyst',   d:'The movie Hackers made this look cooler than it is. The pay, however, is real.',                  s:'ISTE 1.2 Digital Citizen | 1.5 Computational Thinker' },
+      { n:'AI Ethics Researcher',    d:"Someone has to ask if we should before we ask if we can. That's a job now.",                      s:'ISTE 1.2 Digital Citizen | 1.3 Knowledge Constructor' },
+      { n:'Growth Hacker',           d:'Not actual hacking. Marketing, but data-driven and with a more exciting job title.',              s:'ISTE 1.5 Computational Thinker | 1.6 Creative Communicator' },
+      { n:'Cloud Architect',         d:"Your files lived on a floppy. Now they live in the cloud -- someone else's problem.",             s:'ISTE 1.5 Computational Thinker | 1.4 Innovative Designer' },
+      { n:'UX Designer',             d:'Makes sure software does not feel like filling out a tax form. Surprisingly rare.',               s:'ISTE 1.4 Innovative Designer | 1.6 Creative Communicator' },
+      { n:'YouTube Creator',         d:'Broadcasts to the world from a bedroom. In 1992 that would have required a TV station.',          s:'ISTE 1.6 Creative Communicator | 1.1 Empowered Learner' },
+      { n:'E-Commerce Manager',      d:'Runs an entire store without a building, a register, or a parking lot.',                          s:'ISTE 1.4 Innovative Designer | 1.3 Knowledge Constructor' },
+      { n:'Remote Work Coordinator', d:'Manages teams spread across time zones. The commute is zero miles.',                              s:'ISTE 1.7 Global Collaborator | 1.6 Creative Communicator' }
+    ],
+    late9s2000s: [
+      { n:'TikTok Content Creator',          d:'You had MySpace. This is similar except the videos are shorter and the ad revenue is real.',    s:'ISTE 1.6 Creative Communicator | 1.1 Empowered Learner' },
+      { n:'Machine Learning Engineer',       d:'Teaches computers to recognize your face, predict your purchases, and occasionally embarrass you.', s:'ISTE 1.5 Computational Thinker | 1.4 Innovative Designer' },
+      { n:'Blockchain Developer',            d:"Creates distributed ledger systems. Still can't fully explain it at Thanksgiving dinner.",     s:'ISTE 1.4 Innovative Designer | 1.5 Computational Thinker' },
+      { n:'Cloud Architect',                 d:"Your Napster downloads lived locally. Now everything is someone else's server farm in Virginia.", s:'ISTE 1.5 Computational Thinker | 1.4 Innovative Designer' },
+      { n:'AI Prompt Engineer',              d:'ChatGPT launched when these folks were still in high school. Now they write job descriptions.', s:'ISTE 1.5 Computational Thinker | 1.3 Knowledge Constructor' },
+      { n:'Influencer Marketing Coordinator',d:"Someone manages the people who manage their audiences. It's turtles all the way down.",        s:'ISTE 1.6 Creative Communicator | 1.7 Global Collaborator' },
+      { n:'Drone Operator / UAV Technician', d:'Pilot school, but you never leave the ground and the FAA still has opinions about everything.', s:'ISTE 1.4 Innovative Designer | 1.5 Computational Thinker' },
+      { n:'Cybersecurity Analyst',           d:'You grew up online. Now someone pays you to break into systems -- legally.',                    s:'ISTE 1.2 Digital Citizen | 1.5 Computational Thinker' },
+      { n:'Data Analyst',                    d:'Turns spreadsheets into stories executives will actually read. Usually with a pie chart.',      s:'ISTE 1.3 Knowledge Constructor | 1.5 Computational Thinker' },
+      { n:'Streaming Platform Manager',      d:'Netflix did not exist when you started school. Now it is an industry that employs thousands.', s:'ISTE 1.6 Creative Communicator | 1.4 Innovative Designer' },
+      { n:'App Store Optimization Specialist',d:'Makes sure your app shows up when people search. Like SEO, but on a phone, about apps.',     s:'ISTE 1.3 Knowledge Constructor | 1.6 Creative Communicator' },
+      { n:'Remote UX Researcher',            d:'Watches strangers use websites, takes notes, and gets paid for it. Legitimately.',             s:'ISTE 1.4 Innovative Designer | 1.3 Knowledge Constructor' }
+    ],
+    post2010: [
+      { n:'AI Prompt Engineer',         d:'Writes instructions for AI systems. Did not exist as a job title five years ago.',                   s:'ISTE 1.5 Computational Thinker | 1.3 Knowledge Constructor' },
+      { n:'TikTok Content Creator',     d:'You had Instagram, then Vine, then TikTok. The platform changed every few years; the hustle did not.',s:'ISTE 1.6 Creative Communicator | 1.1 Empowered Learner' },
+      { n:'AI Safety Researcher',       d:'Tries to make sure AI does not cause large problems. Somehow underfunded.',                          s:'ISTE 1.2 Digital Citizen | 1.3 Knowledge Constructor' },
+      { n:'Drone Delivery Coordinator', d:'Manages fleets of robots delivering packages through the sky. The post office is nervous.',           s:'ISTE 1.4 Innovative Designer | 1.5 Computational Thinker' },
+      { n:'Metaverse Architect',        d:'Designs virtual worlds people can work, shop, and attend concerts in. Attendance is optional.',      s:'ISTE 1.4 Innovative Designer | 1.6 Creative Communicator' },
+      { n:'Algorithmic Bias Auditor',   d:'Checks AI systems for unfair outcomes. Turns out math can be prejudiced if you teach it wrong.',     s:'ISTE 1.2 Digital Citizen | 1.3 Knowledge Constructor' },
+      { n:'Creator Economy Manager',    d:'Helps individuals monetize their audience. The audience is the product, sort of.',                   s:'ISTE 1.6 Creative Communicator | 1.1 Empowered Learner' },
+      { n:'Synthetic Media Producer',   d:'Creates video, audio, or images using AI. Some of it is indistinguishable from the real thing.',     s:'ISTE 1.6 Creative Communicator | 1.4 Innovative Designer' },
+      { n:'Climate Tech Analyst',       d:'Uses data to track, model, and fight climate change. The job did not exist; neither did the urgency.',s:'ISTE 1.3 Knowledge Constructor | 1.5 Computational Thinker' },
+      { n:'Remote Work Consultant',     d:'Helps companies figure out how to function when nobody comes to the office. Post-2020 growth industry.',s:'ISTE 1.7 Global Collaborator | 1.6 Creative Communicator' },
+      { n:'NFT Strategist',             d:'Was very briefly a lucrative career. A cautionary tale about technology outrunning good judgment.',   s:'ISTE 1.2 Digital Citizen | 1.3 Knowledge Constructor' },
+      { n:'Machine Learning Engineer',  d:'Teaches computers to make decisions. They do it faster than us and sometimes worse.',                s:'ISTE 1.5 Computational Thinker | 1.4 Innovative Designer' }
+    ]
+  };
+
+  function getPool(year) {
+    if (year < 1985)  { return pools.pre1985; }
+    if (year <= 2000) { return pools.mid8090s; }
+    if (year <= 2010) { return pools.late9s2000s; }
+    return pools.post2010;
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  // ── SEARCH ────────────────────────────────────────────────────
+  function doSearch() {
+    var year = parseInt(yearIn.value, 10);
+    if (!year || year < 1950 || year > 2020) {
+      statusTxt.textContent = 'ERROR: Please enter a year between 1950 and 2020';
+      return;
+    }
+    resultsDiv.classList.remove('on');
+    discussDiv.classList.remove('on');
+    loadDiv.classList.add('on');
+    statusTxt.textContent = 'Connecting to Career Database...';
+    playDialup();
+
+    setTimeout(function () {
+      loadDiv.classList.remove('on');
+      var picked = shuffle(getPool(year)).slice(0, 5);
+      resultsTitle.textContent = 'JOBS THAT DID NOT EXIST IN ' + year + ':';
+      jobList.innerHTML = '';
+      picked.forEach(function (job, i) {
+        var el = document.createElement('div');
+        el.className = 'job';
+        el.style.animationDelay = (i * 0.1) + 's';
+        el.innerHTML =
+          '<span class="job-arrow">&#9658;</span>' +
+          '<div class="job-body">' +
+            '<div class="job-name">' + job.n + '</div>' +
+            '<div class="job-desc">' + job.d + '</div>' +
+            '<div class="job-iste">&#128203; ' + job.s + '</div>' +
+          '</div>';
+        jobList.appendChild(el);
+      });
+      resultsDiv.classList.add('on');
+      discussDiv.classList.add('on');
+      statusTxt.textContent = 'Done | 5 careers loaded (randomized)';
+    }, 2200);
+  }
+
+  searchBtn.addEventListener('click', doSearch);
+  yearIn.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') { doSearch(); }
+  });
+
+  // ── EASTER EGG ────────────────────────────────────────────────
+  piBtn.addEventListener('click', function () {
+    unauthDiv.classList.add('on');
+    document.body.style.overflow = 'hidden';
+  });
+
+  closeBtn.addEventListener('click', function () {
+    unauthDiv.classList.remove('on');
+    document.body.style.overflow = '';
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      unauthDiv.classList.remove('on');
+      document.body.style.overflow = '';
+    }
+  });
+
+  var pBuf = '';
+  document.addEventListener('keypress', function (e) {
+    pBuf += e.key.toLowerCase();
+    if (pBuf.indexOf('pizzapizzapizza') !== -1) {
+      pBuf = '';
+      unauthDiv.classList.add('on');
+      document.body.style.overflow = 'hidden';
+    }
+    if (pBuf.length > 30) { pBuf = pBuf.slice(-30); }
+  });
+
+  // ── VISITOR COUNTER ───────────────────────────────────────────
+  var ctr = 4872;
+  setInterval(function () {
+    ctr += Math.floor(Math.random() * 3);
+    ctrNum.textContent = String(ctr).padStart(7, '0');
+  }, 4000);
+
+}());
+</script>
+</body>
+</html>
